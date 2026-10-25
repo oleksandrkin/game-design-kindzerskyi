@@ -12,8 +12,8 @@ TagManager:
   - Water
   - UI
   - Ground
-  - 
-  - 
+  - Hazards
+  - Interactable
   - 
   - 
   - 
@@ -46,6 +46,12 @@ TagManager:
     locked: 0
   - name: Environment
     uniqueID: 901041835
+    locked: 0
+  - name: Decor
+    uniqueID: 2533832649
+    locked: 0
+  - name: Hazards
+    uniqueID: 3288665077
     locked: 0
   - name: Player
     uniqueID: 2635217159

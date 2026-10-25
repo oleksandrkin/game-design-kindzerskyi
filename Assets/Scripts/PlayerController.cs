@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -29,6 +30,7 @@ public class PlayerController : MonoBehaviour
     
     [Header("Зворотний звʼязок")]
     [SerializeField] private CameraShake cameraShake;
+    [SerializeField] private CinemachineImpulseSource impulseSource;
     [SerializeField, Range(1f, 30f)] private float hardLandingSpeed = 9f;
     [SerializeField] private HitStop hitStop;
     
@@ -40,6 +42,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0.1f, 0.8f)] private float stepInterval = 0.32f;
     private float stepTimer;
 
+    
+    [Header("Взаємодія")]
+    [SerializeField] private Transform interactPoint;
+    [SerializeField, Range(0.2f, 1.5f)] private float interactRadius = 0.6f;
+    [SerializeField] private LayerMask interactableLayer;
+ 
 
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     
@@ -57,6 +65,7 @@ public class PlayerController : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         controls = new PlayerControls();
         if (cameraShake == null) cameraShake = FindAnyObjectByType<CameraShake>();
+        if (impulseSource == null) impulseSource = FindAnyObjectByType<CinemachineImpulseSource >();
         if (hitStop == null) hitStop = FindAnyObjectByType<HitStop>();
     }
  
@@ -92,6 +101,9 @@ public class PlayerController : MonoBehaviour
         CheckLanding();
         UpdateFootsteps();
         UpdateVisuals();
+        
+        if (controls.Player.Interact.WasPressedThisFrame())
+            TryInteract();
     }
  
     private void FixedUpdate()
@@ -168,7 +180,8 @@ public class PlayerController : MonoBehaviour
         if (speed < hardLandingSpeed) return;
  
         //cameraShake.Shake(0.12f, 0.12f);   // ← весь варіант А
-        hitStop.Stop(0.1f);   // ← весь варіант Б
+        //hitStop.Stop(0.1f);   // ← весь варіант Б
+        impulseSource.GenerateImpulseWithForce(0.3f);
     }
     
     private void PlayFootstep()
@@ -201,5 +214,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
+    private void TryInteract()
+    {
+        Collider2D hit = Physics2D.OverlapCircle(
+            interactPoint.position, interactRadius, interactableLayer);
+ 
+        if (hit != null && hit.TryGetComponent(out IInteractable target))
+            target.Interact();
+    }
 }
