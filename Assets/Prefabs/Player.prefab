@@ -481,6 +481,8 @@ MonoBehaviour:
   invulnerableTime: 0.6
   knockbackForce: 8
   respawn: {fileID: 1095992994667941493}
+  healthChanged: {fileID: 11400000, guid: 0de184b540e967b479ec085e56ddb1a7, type: 2}
+  maxHealthChanged: {fileID: 11400000, guid: 52bbb638c56db9c4da4a197ee76549c5, type: 2}
 --- !u!114 &4969299355644044383
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,15 +11,22 @@ public class Health : MonoBehaviour, IDamageable
     private float invulnerableUntil;
     private Rigidbody2D body;
  
+    
     public int Current => current;
+    public int Max => maxHealth;
+
  
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
         ResetHealth();
     }
- 
-    public void ResetHealth() => current = maxHealth;
+
+    public void ResetHealth()
+    {
+        current = maxHealth;   
+        OnHealthChanged();
+    }
  
     // Ворогу максимум приходить з ассета — викликає EnemyController
     public void Configure(int newMax)
@@ -35,16 +42,19 @@ public class Health : MonoBehaviour, IDamageable
         invulnerableUntil = Time.time + invulnerableTime;
  
         current = Mathf.Max(0, current - amount);
+        OnHealthChanged();          
  
         // Відкидання — і зворотний зв'язок, і механіка: дає час відійти
         Vector2 dir = ((Vector2)transform.position - sourcePosition).normalized;
         body.AddForce(dir * knockbackForce, ForceMode2D.Impulse);
  
         if (current == 0) Die();
-        else              OnDamaged();
+        else OnDamaged();
     }
  
     // Два гачки для спадкоємців — єдине, що відрізняє ворога від гравця
     protected virtual void OnDamaged() { }
     protected virtual void Die() => gameObject.SetActive(false);
+    
+    protected virtual void OnHealthChanged() { }
 }

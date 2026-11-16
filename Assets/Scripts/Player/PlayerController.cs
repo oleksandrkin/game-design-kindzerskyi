@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         controls = new PlayerControls();
         if (cameraShake == null) cameraShake = FindAnyObjectByType<CameraShake>();
-        if (impulseSource == null) impulseSource = FindAnyObjectByType<CinemachineImpulseSource >();
+        if (impulseSource == null) impulseSource = FindAnyObjectByType<CinemachineImpulseSource>();
         if (hitStop == null) hitStop = FindAnyObjectByType<HitStop>();
     }
  
@@ -76,6 +76,8 @@ public class PlayerController : MonoBehaviour
  
     private void Update()
     {
+        if (PauseController.IsPaused) return;
+        
         isGrounded = CheckGround();
         
         // Поповнюємо coyote лише коли стоїмо, а не летимо вгору — див. крок 6
